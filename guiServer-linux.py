@@ -3,9 +3,6 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
-# TODO manage clients leaving chat
-# 
-
 #helper function, so you don't have to encode everything as Bytes
 def toBytes(myStr):
 	return bytes(myStr, "utf-8")
@@ -15,7 +12,7 @@ def handleNewClient():
 	# TODO document
 	while 1:
 		newClientSock, newClientAddress = SERVER.accept()
-		clientList.append([newClientSock, newClientAddress]) #
+		#clientList.append([newClientSock, newClientAddress]) #
 		Thread(target = handleClient, args = (newClientSock,)).start() #starts new thread to continuously manage client
 
 def isDM(msg):
@@ -64,7 +61,7 @@ def handleClient(client):
 			print("Someone sent a message--%s: %s" % (name, msg))
 			# TODO if msg is a DM, don't broadcast
 			if isDM(msg):
-				client.send(toBytes("%s: %s" % (name, msg)))
+				client.send(toBytes("%s: %s\n" % (name, msg)))
 				with open(chatlogName, 'a') as f: #write message contents to chatlog
 					f.write("%s: %s\n" % (name, msg))
 				sendDM(msg, fromUser=name)
@@ -74,10 +71,12 @@ def handleClient(client):
 				broadcast(msg, prefix=name)
 		else:
 			client.send(toBytes(QUITMSG)) # not sure the server needs to send a 'quit' to the client?
+			"""
 			for pair in clientList: #remove client from list
 				if pair[0] == client:
 					removethisclientpair = pair
 			clientList.remove(removethisclientpair) # soooo sloppy. you can do better than this derek...
+			"""
 			client.close()
 			clientNameDict.pop(name, None) #remove client from dict. to be clear. there is NO good reason that there is a list AND a dict...
 			for client in clientNameDict.values(): # tell all named clients a list of active users when someone leaves
@@ -85,11 +84,11 @@ def handleClient(client):
 			break
 #sends message to all clients
 def broadcast(msg, prefix=""):
-	for client in clientList:
+	for clientName in clientNameDict.keys():
 		if prefix == "":
-			client[0].send(toBytes("%s\n" % msg))
+			clientNameDict[clientName].send(toBytes("%s\n" % msg)) #inner object is a socket we are sending to
 		else:
-			client[0].send(toBytes("%s: %s\n" % (prefix, msg))) # TODO this doesn't work when user sends QUITMSG
+			clientNameDict[clientName].send(toBytes("%s: %s\n" % (prefix, msg))) # TODO this doesn't work when user sends QUITMSG
 
 if __name__ == "__main__":
 	import datetime # for timestamping chatlogs
