@@ -6,12 +6,6 @@ from threading import Thread
 # TODO manage clients leaving chat
 # 
 
-QUITMSG = "{quit}"
-HOST = ""
-PORT = 8080
-BUFSZ = 1024
-ADDR = (HOST, PORT)
-
 #helper function, so you don't have to encode everything as Bytes
 def toBytes(myStr):
 	return bytes(myStr, "utf-8")
@@ -97,12 +91,18 @@ def broadcast(msg, prefix=""):
 			client[0].send(toBytes("%s: %s\n" % (prefix, msg))) # TODO this doesn't work when user sends QUITMSG
 
 if __name__ == "__main__":
-	import datetime
+	import datetime # for timestamping chatlogs
 	
+	QUITMSG = "{quit}"
+	HOST = ""
+	PORT = 8080
+	BUFSZ = 1024
+	ADDR = (HOST, PORT)
+
 	SERVER = socket(AF_INET, SOCK_STREAM)
 	SERVER.bind(ADDR)
-	SERVER.listen(10) # i think this is top number of connections it can manage
-	# chatlog YYYY-MM-DD HHMMSS
+	SERVER.listen(5) # mandatory; optional for python >=3.5
+	# make "chatlog YYYY-MM-DD HHMMSS.txt" file
 	chatlogName = "chatlog %04d-%02d-%02d %02d%02d%02d.txt" % (
 		datetime.datetime.today().year,
 		datetime.datetime.today().month,
