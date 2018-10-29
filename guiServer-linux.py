@@ -38,7 +38,7 @@ def sendDM(msg, fromUser=""):
 					break
 	if recipient == "":
 		raise NameError("sendDM failed")
-	print("send DM() recipient = %s" % str(recipient))
+		print("send DM() recipient = %s" % str(recipient))
 	else:
 		if fromUser == "":
 			clientNameDict[recipient].send(toBytes(msg))
