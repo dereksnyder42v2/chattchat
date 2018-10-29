@@ -83,11 +83,7 @@ def send(event=None):
 		clientSocket.close()
 		window.quit()
 
-def onClose(event=None):
-	# TODO this doesn't work at all LOL
-	msgEntry.set(QUITMSG)
-	send()
-	quit()
+
 
 if __name__ == "__main__":
 	import tkinter # for GUI
@@ -194,6 +190,13 @@ if __name__ == "__main__":
 	# SEND BUTTON
 	sendButton = tkinter.Button(window, text="Send", command=sendClicked)
 	sendButton.grid(column=1, row=2, padx=5, pady=10, sticky=tkinter.E)
+
+	# CLOSING FUNCTIONALITY
+	def onClosing(event=None):
+		# TODO this doesn't work at all LOL
+		msgEntry.set(QUITMSG)
+		send()
+	window.protocol("WM_DELETE_WINDOW", onClosing)
 
 	# Start various threads and helper functions to continuously update different text boxes, etc.
 	def refocusConvo():
