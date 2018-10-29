@@ -196,6 +196,8 @@ if __name__ == "__main__":
 		# TODO this doesn't work at all LOL
 		msgEntry.set(QUITMSG)
 		send()
+		window.quit()
+		quit()
 	window.protocol("WM_DELETE_WINDOW", onClosing)
 
 	# Start various threads and helper functions to continuously update different text boxes, etc.

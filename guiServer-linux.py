@@ -38,11 +38,12 @@ def sendDM(msg, fromUser=""):
 					break
 	if recipient == "":
 		raise NameError("sendDM failed")
+	print("send DM() recipient = %s" % str(recipient))
 	else:
 		if fromUser == "":
 			clientNameDict[recipient].send(toBytes(msg))
 		else:
-			clientNameDict[recipient].send(toBytes("%s: %s\n" % (fromUser, msg)))
+			clientNameDict[recipient].send(toBytes("\n%s: %s\n" % (fromUser, msg)))
 
 def handleClient(client):
 	#check name against clientNameDict/ if good, add name, send msgs with name prefix
